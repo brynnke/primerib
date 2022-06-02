@@ -223,8 +223,83 @@ function promptSection(sectionChoices) {
         console.log("Deleting an employee");
 
         var query = 
-            
+        `SELECT e.id, e.first_name, e.last_name
+        FROM employee e`
+
+        connection.query(query, function (err, res){
+            if (err) throw err;
+
+            const deleteEmployeeChoices = res.map(({id, first_name, last_name}) => ({
+                value: id, name: `${id} ${first_name} ${last_name}`
+            }));
+
+            console.table(res);
+            console.log("ArrayToDelete\n");
+
+            promptDelete(deleteEmployeeChoices);
+        });
     }
+
+    // user choose employee list, then can delete employee
+
+    function promptDelete(deleteEmployeeChoices){
+        inquirer
+        .prompt ([
+            {
+                type: "list",
+                name: "employeeId", 
+                message: "Which employee would you like to remove?",
+                choices: deleteEmployeeChoices
+            }
+        ])
+        .then(function (answer){
+            var query = `DELEtE FROM employee WHERE?`;
+
+            connection.query(query, {id:answer.employeeId}, function (err,res){
+                if (err) throw err;
+
+                console.table(res);
+                console.log(res.affectedRows + "DELETED!!\n");
+
+                firstPrompt();
+            });
+
+        });
+    }
+
+    function updateEmployeeRole() {
+        employeeArray();
+
+    }
+
+    function employeeArray() {
+        console.log("updating employee");
+
+        var query = 
+        `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
+        FROM employee e
+        JOIN role r
+          ON e.role_id = r.id
+        JOIN department d
+        ON d.id = r.department_id
+        JOIN employee m
+          ON m.id = e.manager_id`
+
+        connection.query(query, function (err, res){
+            if (err) throw err;
+
+            const deleteChoices = res.map(({id, first_name, last_name})=> ({
+                value: id, name: `${first_name} ${last_name}`
+            }));
+
+            console.table(res);
+            console.log("employeeArray update\n")
+
+            roleAray(employeeChoices);
+        });
+    }
+
+    
 }
 
 
