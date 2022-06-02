@@ -1,6 +1,7 @@
 // deprendcies 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const { type } = require("express/lib/response");
 require("console.table");
 
 // mysql connect
@@ -191,10 +192,39 @@ function promptSection(sectionChoices) {
                 name: "last",
                 message:"What is the employee last name?"
             },
-            (
-                
-            )
+        
         ])
+        .then(function (answer){
+            console.log(answer);
+
+            var query = `INSERT INTO employee SET?`
+
+            connection.query(query, 
+                {
+                    first_name: answer.first_name,
+                    last_name: answer.last_name,
+                    role_id: answer.roleId,
+                    manager_id: answer.managerId,
+                },
+                function (err, res){
+                    if (err) throw err;
+
+                    console.table(res);
+                    console.log(res.insertedRows + "Inserted successfully!\n");
+
+                    firstPrompt();
+                });
+        });
+    }
+
+    // make array to delete employees
+
+    function removeEmployees(){
+        console.log("Deleting an employee");
+
+        var query = 
+            
     }
 }
+
 
