@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
 
     // port
-    port:3001,
+    port: 3001,
 
     // useranme
     user: 'root',
@@ -19,7 +19,7 @@ const connection = mysql.createConnection({
 });
 
 // mysql server connected and sql database connected
-connection.connect(function (err){
+connection.connect(function (err) {
     if (err) throw err;
     // run start function after connect made
     firstPrompt();
@@ -30,8 +30,8 @@ function firstPrompt() {
     inquirer
         .prompt({
             type: "list",
-            name:"task",
-            message:"What would you like?",
+            name: "task",
+            message: "What would you like?",
             choices: [
                 "view employees by section",
                 "view employees by ",
@@ -41,8 +41,8 @@ function firstPrompt() {
                 "add new role",
                 "END"]
         })
-        .then(function ({task}){
-            switch (task){
+        .then(function ({ task }) {
+            switch (task) {
                 case "view employee":
                     viewEmployee();
                     break;
@@ -50,16 +50,16 @@ function firstPrompt() {
                     viewEmployeeBySection();
                     break;
                 case "Add employee":
-                    addEmployee ();
+                    addEmployee();
                     break;
                 case "Remove employee":
-                    removeEmployees ();
+                    removeEmployees();
                     break;
                 case "Update Employee Role":
-                    updateEmployeeRole ();
-                    break; 
+                    updateEmployeeRole();
+                    break;
                 case "Add roles":
-                    addRole ();
+                    addRole();
                     break;
             }
         });
@@ -67,11 +67,11 @@ function firstPrompt() {
 
 // emmployee view fucion
 
-function viewEmployee () {
+function viewEmployee() {
     console.log("Viewing employee\n");
 
-    var query = 
-    `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
+    var query =
+        `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
     FROM employee e
     LEFT JOIN role r
       ON e.role_id = r.id
@@ -80,24 +80,24 @@ function viewEmployee () {
     LEFT JOIN employee m
       ON m.id = e.manager_id`
 
-    connection.query(query, function (err, res){
+    connection.query(query, function (err, res) {
         if (err) throw err;
 
         console.table(res);
         console.log("employees viewed \n");
 
-        firstPrompt ();
+        firstPrompt();
     });
 
 }
 
 // section array
 
-function viewEmployeeBySection () {
+function viewEmployeeBySection() {
     console.log("Viewing employees by department\n");
 
     var query =
-    `SELECT d.id, d.name, r.salary AS budget
+        `SELECT d.id, d.name, r.salary AS budget
     FROM employee e
     LEFT JOIN role r
       ON e.role_id = r.id
@@ -105,8 +105,96 @@ function viewEmployeeBySection () {
     ON d.id = r.department_id
     GROUP BY d.id, d.name`
 
-    connection.query(query, function (err, res){
-        
-    })
-  
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+
+        const sectionChoices = res.map(data => ({
+            value: data.id, name: data.name
+        }));
+
+        console.table(res);
+        console.log("Section view success\n");
+
+        promptSection(sectionChoices);
+    });
+
 }
+
+// chose section list, the pop up menu
+
+function promptSection(sectionChoices) {
+
+    inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "sectionId",
+                message: "Which section would you choose?",
+                choices: sectionChoices
+            }
+        ])
+        .then(function (answer) {
+            console.log("answer", answer.sectionId):
+
+            var query =
+                `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department 
+        FROM employee e
+        JOIN role r
+          ON e.role_id = r.id
+        JOIN department d
+        ON d.id = r.department_id
+        WHERE d.id = ?`
+
+            connection.query(query, answer.sectionId, function (err, res) {
+                if (err) throw err;
+
+                console.table("response", res);
+                console.log(res.affectedRows + "Employes have been view \n");
+
+                firstPrompt();
+            });
+        });
+
+    // employee array created
+
+    function addEmployee() {
+        console.log("inserting an employee")
+
+        var query =
+            `SELECT r.id, r.title, r.salary 
+      FROM role r`
+
+      connection.query (query, function (err, res){
+          if (err) throw err;
+
+          const roleChoice = res.map(({id, title, salary }) =>({
+              value: id, title: `$(title)`, salary: `{salary}`
+          }));
+
+          console.table(res);
+          console.log("RoleToinstert");
+
+          promptInsert(roleChoice);
+      });
+    }
+
+    function promptInsert(roleChoice) {
+        inquirer 
+        .prompt([
+            {
+                type:"input",
+                name: "first",
+                message: "What is the employee's first name?"
+            },
+            {
+                type: "input",
+                name: "last",
+                message:"What is the employee last name?"
+            },
+            (
+                
+            )
+        ])
+    }
+}
+
