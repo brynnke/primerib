@@ -8,6 +8,7 @@ Purpose is to be able to view people working on a project in a cleaver webpage.
 JAVASCRIPT
 MYSQL
 NODE
+inquirer
 
 ## User story
 AS A business owner
@@ -36,5 +37,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 ## Mockup
 
 ## deployed link
+https://www.loom.com/share/4670f3bdb6914ecd8ec347a466146659
+
 
 
