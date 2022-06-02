@@ -35,7 +35,7 @@ WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 
 ## Mockup
-
+https://github.com/brynnke/primerib/blob/main/assets/Screen%20Shot%202022-06-02%20at%201.18.59%20PM.png
 ## deployed link
 https://www.loom.com/share/4670f3bdb6914ecd8ec347a466146659
 
