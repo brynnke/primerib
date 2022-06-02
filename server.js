@@ -135,7 +135,7 @@ function promptSection(sectionChoices) {
             }
         ])
         .then(function (answer) {
-            console.log("answer", answer.sectionId):
+            console.log("answer", answer.sectionId);
 
             var query =
                 `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department 
