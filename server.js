@@ -1,6 +1,7 @@
 // deprendcies 
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const requireStack = require("Stack");
 const { type } = require("express/lib/response");
 require("console.table");
 
@@ -380,7 +381,8 @@ function promptSection(sectionChoices) {
             console.table(res);
             console.log("Section array");
 
-            promptAddRole(sectionChoices) {
+            promptAddRole(sectionChoices) 
+            {
 
                 inquirer
                     .prompt([
